@@ -35,6 +35,27 @@ class ContourWithData():
         if self.fltArea < MIN_CONTOUR_AREA: return False        # much better validity checking would be necessary
         return True
 
+def LoadTest(im):
+	imgTestingNumbers = cv2.imread(im)          # read in testing numbers image
+
+	if imgTestingNumbers is None:                           # if image was not read successfully
+		print "error: image not read from file \n\n"        # print error message to std out
+		os.system("pause")                                  # pause so user can see error message 
+	return imgTestingNumbers		
+	
+def img2thresh(im):
+	imgGray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)       # get grayscale image
+	imgBlurred = cv2.GaussianBlur(imgGray, (5,5), 0)                    # blur
+
+                                                        # filter image from grayscale to black and white
+	imgThresh = cv2.adaptiveThreshold(imgBlurred,                           # input image
+                                      255,                                  # make pixels that pass the threshold full white
+                                      cv2.ADAPTIVE_THRESH_GAUSSIAN_C,       # use gaussian rather than mean, seems to give better results
+                                      cv2.THRESH_BINARY_INV,                # invert so foreground will be white, background will be black
+                                      11,                                   # size of a pixel neighborhood used to calculate threshold value
+                                      2)                                    # constant subtracted from the mean or weighted mean
+	return imgThresh
+    										
 ###################################################################################################
 
 allContoursWithData = []                # declare empty lists,
@@ -66,28 +87,11 @@ kNearest.train(npaFlattenedImages, cv2.ml.ROW_SAMPLE, npaClassifications)
 #----------------------------------------------------------------------------------------------------
 # Загружаем тестовое изображение --------------------------------------------------------------------
 
-imgTestingNumbers = cv2.imread("test2.png")          # read in testing numbers image
+imgTestingNumbers = LoadTest("test/test2.png")
 
-if imgTestingNumbers is None:                           # if image was not read successfully
-	print "error: image not read from file \n\n"        # print error message to std out
-	os.system("pause")                                  # pause so user can see error message 
-														# and exit function (which exits program)
-# ----------------------------------------------------------------------------------------------------
+imgThresh = img2thresh(imgTestingNumbers)
 
-# Обрабатываем тестовую картинку для работы с ней и копируем результат -------------------------------
-
-imgGray = cv2.cvtColor(imgTestingNumbers, cv2.COLOR_BGR2GRAY)       # get grayscale image
-imgBlurred = cv2.GaussianBlur(imgGray, (5,5), 0)                    # blur
-
-                                                        # filter image from grayscale to black and white
-imgThresh = cv2.adaptiveThreshold(imgBlurred,                           # input image
-                                      255,                                  # make pixels that pass the threshold full white
-                                      cv2.ADAPTIVE_THRESH_GAUSSIAN_C,       # use gaussian rather than mean, seems to give better results
-                                      cv2.THRESH_BINARY_INV,                # invert so foreground will be white, background will be black
-                                      11,                                   # size of a pixel neighborhood used to calculate threshold value
-                                      2)                                    # constant subtracted from the mean or weighted mean
-
-imgThreshCopy = imgThresh.copy()        # make a copy of the thresh image, this in necessary b/c findContours modifies the image
+imgThreshCopy = imgThresh.copy()  
 
 # -----------------------------------------------------------------------------------------------------
 # Находим контуры
