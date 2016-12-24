@@ -15,52 +15,46 @@ RESIZED_IMAGE_HEIGHT = 30
 ###################################################################################################
 
 # Загружаем Картинку с буквами
+def LoadPicLett(file):
+	imgTrainingNumbers = cv2.imread(file)            # read in training numbers image
 
-imgTrainingNumbers = cv2.imread("training_chars.png")            # read in training numbers image
-
-if imgTrainingNumbers is None:                          # if image was not read successfully
-	print "error: image not read from file \n\n"        # print error message to std out
-	os.system("pause")                                	# pause so user can see error message
-    
-#---------------------------------------------------------------------------------------------------
-
-# Переводим эту картинку в градации серого, сглаживаем и делаем белыми на черном фоне --------------
-
-imgGray = cv2.cvtColor(imgTrainingNumbers, cv2.COLOR_BGR2GRAY)          # get grayscale image
-imgBlurred = cv2.GaussianBlur(imgGray, (5,5), 0)                        # blur
+	if imgTrainingNumbers is None:                          # if image was not read successfully
+		print "error: image not read from file \n\n"        # print error message to std out
+		os.system("pause")                                	# 
+	return imgTrainingNumbers
+	
+def im2thresh(im):
+	imgGray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)          # get grayscale image
+	imgBlurred = cv2.GaussianBlur(imgGray, (5,5), 0)                        # blur
 
                                                         # filter image from grayscale to black and white
-imgThresh = cv2.adaptiveThreshold(imgBlurred,                           # input image
+	imgThresh = cv2.adaptiveThreshold(imgBlurred,                           # input image
                                   255,                                  # make pixels that pass the threshold full white
                                   cv2.ADAPTIVE_THRESH_GAUSSIAN_C,       # use gaussian rather than mean, seems to give better results
                                   cv2.THRESH_BINARY_INV,                # invert so foreground will be white, background will be black
                                   11,                                   # size of a pixel neighborhood used to calculate threshold value
-                                   2)                                    # constant subtracted from the mean or weighted mean
-#---------------------------------------------------------------------------------------------------
+								   2)
+	return imgThresh
 
-# Смотрим на получившуюся картинку, копируем ее в переменную, находим контуры ----------------------
+								 
+#--------------------------____Main____-------------------------------------------------------------
+
+imgTrainingNumbers = LoadPicLett("train/training_chars.png")
+imgThresh = im2thresh(imgTrainingNumbers)
 
 cv2.imshow("imgThresh", imgThresh)      # show threshold image for reference
 
-imgThreshCopy = imgThresh.copy()        # make a copy of the thresh image, this in necessary b/c findContours modifies the image
+imgThreshCopy = imgThresh.copy() 
 
 imgContours, npaContours, npaHierarchy = cv2.findContours(imgThreshCopy,        # input image, make sure to use a copy since the function will modify this image in the course of finding contours
                                                  cv2.RETR_EXTERNAL,                 # retrieve the outermost contours only
                                                  cv2.CHAIN_APPROX_SIMPLE)           # compress horizontal, vertical, and diagonal segments and leave only their end points
 
-                                # declare empty numpy array, we will use this to write to file later
-                                # zero rows, enough cols to hold all image data
-#----------------------------------------------------------------------------------------------------
-# Создаем массивы для наших файлов ------------------------------------------------------------------
-
 npaFlattenedImages =  np.empty((0, RESIZED_IMAGE_WIDTH * RESIZED_IMAGE_HEIGHT))
 
-intClassifications = []         # declare empty classifications list, this will be our list of how we are classifying our chars from user input, we will write to file at the end
-
-#-----------------------------------------------------------------------------------------------------
+intClassifications = []  
 
 # Массив символов ------------------------------------------------------------------------------------
-# possible chars we are interested in are digits 0 through 9, put these in list intValidChars
 
 intValidChars = []
 
@@ -73,6 +67,7 @@ for i in range(65,91):
 	intValidChars.append(chr(i))
 
 #------------------------------------------------------------------------------------------------------
+
 # Около каждого контура рисуем прямоугольник
 for npaContour in npaContours:                          # for each contour
 	if cv2.contourArea(npaContour) > MIN_CONTOUR_AREA:          # if contour is big enough to consider
@@ -119,3 +114,6 @@ np.savetxt("flattened_images.txt",
 npaFlattenedImages)          #
 
 cv2.destroyAllWindows()             # remove windows from memory
+
+
+
