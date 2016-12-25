@@ -38,6 +38,11 @@ class BigRedBut:
 								text="Recognize",
 								width=30,height=5,
 								bg="white",fg="green")
+		# Browse test file
+		self.but_browse = Button(root,
+									text="Browse",
+									bg="white",fg="green")
+		
 		
 		#-------------HANDLER------------------------				
 		#обработчик события нажатия на кнопки мыши				
@@ -46,32 +51,51 @@ class BigRedBut:
 		self.but_clean.bind("<Button-1>",self.clean)
 		self.but_rec.bind("<Button-1>",self.rec)
 		
+		# однострочное окно
+		self.ent = Entry(root,width=20,bd=3)
+		
 		#-------------PACK---------------------------
 		#распаковывает наши кнопки на область root
 		self.but_train.pack()
 		self.but_test.pack()
 		self.but_clean.pack()
 		self.but_rec.pack()
+		self.ent.pack()
 		
 		
 	def  test(self,event):
-		execfile('GDat.py')
+		execfile('GenData.py')
 		
 	def train(self, event):
 		execfile('TrainAndTest.py')
 	
 	def clean(self,event):
-		pass
-	
-	def recognize(self,event):
-		pass
+		
+		f = open ('classification.txt','w')
+		r = open ('flattened_images.txt','w')
+		f.close()
+		r.close()
 	
 	def rec(self, event):
-		pass			
+		pass
+		
+	def browse(self,event):
+#######		#доделать!!------------------------------------
+		filename = tkFileDialog.askopenfilename(filetypes = (("Template files", "*.tplate")
+                                                             ,("HTML files", "*.html;*.htm")
+                                                             ,("All files", "*.*") ))
+        if filename: 
+            try: 
+                self.settings["template"].set(filename)
+            except: 
+                tkMessageBox.showerror("Open Source File", "Failed to read file \n'%s'"%filename)
 #-----------------------------------------------------------------------
 
 #----------------------___main___---------------------------------------
 
 root = Tk()
+root.title('TextRecognition')
+#root.geometry('600x600')
 obj = BigRedBut()
-mainloop()	
+
+mainloop()		
