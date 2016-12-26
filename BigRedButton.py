@@ -50,6 +50,7 @@ class BigRedBut:
 		self.but_test.bind("<Button-1>", self.train)
 		self.but_clean.bind("<Button-1>",self.clean)
 		self.but_rec.bind("<Button-1>",self.rec)
+		self.ent.bind("<Return>",self.browse)
 		
 		# однострочное окно
 		self.ent = Entry(root,width=20,bd=3)
@@ -60,6 +61,7 @@ class BigRedBut:
 		self.but_test.pack()
 		self.but_clean.pack()
 		self.but_rec.pack()
+		self.but_browse()
 		self.ent.pack()
 		
 		
@@ -81,6 +83,8 @@ class BigRedBut:
 		
 	def browse(self,event):
 #######		#доделать!!------------------------------------
+		t = ent.get()
+		lbl.configure(text = t)
 		filename = tkFileDialog.askopenfilename(filetypes = (("Template files", "*.tplate")
                                                              ,("HTML files", "*.html;*.htm")
                                                              ,("All files", "*.*") ))
