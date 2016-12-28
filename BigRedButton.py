@@ -8,69 +8,140 @@ import os
 
 
 from Tkinter import *
+from tkFileDialog import *
+import fileinput
+from tkMessageBox import *
 
 MIN_CONTOUR_AREA = 100
 
+from TrainAndTest import *
+
 #-----------------------------------------------------------------------
 
-class BigRedBut:
+kN = cv2.ml.KNearest_create()
+imtest = []
+imtrain = []
+
+class GenAndTrain:
+	
 	def __init__(self):
+		root=fra1
+		#-------------BUTTONS-----------------------	
 		
-		#-------------BUTTONS-----------------------
+		# Generate data button
+		self.gen_data = Button(root,
+						text="Generate Data",
+						width=10,height=2,
+						bg="white",fg="green")
+						
+		# Browse test file
+		self.but_browse = Button(root,
+									text="Browse",
+									bg="white",fg="green")
+						
 		# Train button
 		self.but_train = Button(root,
-						text="Старт",
+						text="Train",
 						width=30,height=5,
 						bg="red",fg="green")
 		
-		# Testing button
-		self.but_test = Button(root,
-						text="Test",
-						width=30,height=5,
-						bg="white",fg="green")
-		# Clean button
-		self.but_clean = Button(root,
-								text="Clean",
-								width=30,height=5,
-								bg="white",fg="green")
+		# однострочное окно
+		self.ent = Entry(root,width=20,bd=3)
+		
+		
+		
+		
+		#-------------HANDLER------------------------				
+		#обработчик события нажатия на кнопки мыши				
+		self.gen_data.bind("<Button-1>", self._generate)
+		self.but_browse.bind("<Button-1>",self.browse)
+		self.ent.bind("<Return>",self.entry_ent)
+		self.but_train.bind("<Button-1>",self.train)
+		
+		
+		#-------------PACK---------------------------
+		#распаковывает наши кнопки на область root
+		self.gen_data.pack()
+		self.but_browse.pack()
+		self.ent.pack()
+		self.but_train.pack()
+		
+		
+	#-----------------FUNCTIONS----------------------
+		
+	def  _generate(self,event):
+		execfile('GenData.py')
+		
+		
+	def browse(self,event):
+		
+		global imtrain
+		
+		op=askopenfilename()
+		im = PhotoImage(file=op)
+		# initiate imtrain to our dowload 
+		imtrain=im
+		l = Label(root, image=im)
+		self.ent.delete(0,END)
+		self.ent.insert(0, op)
+			
+	def train(self, event):
+		global kN
+		
+		kN = TRAIN()
+		
+		
+	def entry_ent(self,event):
+		t = ent.get()
+			
+
+class TestAndClean:
+	
+	def __init__(self):
+		root=fra2
+		#-------------BUTTONS-----------------------
+		
+		#Browse section
+		self.but_browse = Button(root,
+							text="browse test",
+							width=30,height=5,
+							bg='white',fg='green')
+		
+		self.ent = Entry(root,width=30, bd=3)
+		
+		# Test Recognition section(2 picture)
+
+		
 		# Recognize button
 		self.but_rec = Button(root,
 								text="Recognize",
 								width=30,height=5,
 								bg="white",fg="green")
-		# Browse test file
-		self.but_browse = Button(root,
-									text="Browse",
-									bg="white",fg="green")
 		
-		
+		# Clean button
+		self.but_clean = Button(root,
+								text="Clean",
+								width=30,height=5,
+								bg="white",fg="green")
+								
+								
 		#-------------HANDLER------------------------				
 		#обработчик события нажатия на кнопки мыши				
-		self.but_train.bind("<Button-1>", self.test)
-		self.but_test.bind("<Button-1>", self.train)
-		self.but_clean.bind("<Button-1>",self.clean)
+		self.but_browse.bind("<Button-1>", self.browse)
 		self.but_rec.bind("<Button-1>",self.rec)
-		self.ent.bind("<Return>",self.browse)
+		self.but_clean.bind("<Button-1>",self.clean)
+		self.ent.bind('<Return>', self.entry_ent)
 		
-		# однострочное окно
-		self.ent = Entry(root,width=20,bd=3)
 		
 		#-------------PACK---------------------------
 		#распаковывает наши кнопки на область root
-		self.but_train.pack()
-		self.but_test.pack()
-		self.but_clean.pack()
-		self.but_rec.pack()
-		self.but_browse()
+		self.but_browse.pack()
 		self.ent.pack()
+		self.but_rec.pack()
+		self.but_clean.pack()
 		
-		
-	def  test(self,event):
-		execfile('GenData.py')
-		
-	def train(self, event):
-		execfile('TrainAndTest.py')
-	
+	#-----------------FUNCTIONS----------------------
+
 	def clean(self,event):
 		
 		f = open ('classification.txt','w')
@@ -79,27 +150,35 @@ class BigRedBut:
 		r.close()
 	
 	def rec(self, event):
-		pass
+		TEST(kN)
 		
 	def browse(self,event):
-#######		#доделать!!------------------------------------
+
+		op=askopenfilename()
+		im = PhotoImage(file=op)
+		l = Label(root, image=im)
+		l.image = im
+		self.ent.delete(0,END)
+		self.ent.insert(0, op)
+		l.pack()
+	
+	def entry_ent(self,event):
 		t = ent.get()
-		lbl.configure(text = t)
-		filename = tkFileDialog.askopenfilename(filetypes = (("Template files", "*.tplate")
-                                                             ,("HTML files", "*.html;*.htm")
-                                                             ,("All files", "*.*") ))
-        if filename: 
-            try: 
-                self.settings["template"].set(filename)
-            except: 
-                tkMessageBox.showerror("Open Source File", "Failed to read file \n'%s'"%filename)
+								
+		
 #-----------------------------------------------------------------------
 
 #----------------------___main___---------------------------------------
 
 root = Tk()
-root.title('TextRecognition')
+fra1=Frame(root,width=500,height=100,bd=5)
+fra2=Frame(root,width=500,height=100,bd=5)
+root.title('TextRecognition_0.01')
+fra1.pack(side="left")
+fra2.pack(side="right")
+
 #root.geometry('600x600')
-obj = BigRedBut()
+obj0 = GenAndTrain()
+obj1 = TestAndClean()
 
 mainloop()		
