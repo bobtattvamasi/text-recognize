@@ -6,18 +6,18 @@ import numpy as np
 import operator
 import os
 
-# module level variables ##########################################################################
+# module level variables------------------------------------------------
 MIN_CONTOUR_AREA = 100
 
 RESIZED_IMAGE_WIDTH = 20
 RESIZED_IMAGE_HEIGHT = 30
 
-###################################################################################################
+# инициализация контура с зеленным прямоугольником
 class ContourWithData():
 
-    # member variables ############################################################################
-    npaContour = None           # contour
-    boundingRect = None         # bounding rect for contour
+    # member variables 
+    npaContour = None           # контур
+    boundingRect = None         # Выделенный прямоугольник для контура
     intRectX = 0                # bounding rect top left corner x location
     intRectY = 0                # bounding rect top left corner y location
     intRectWidth = 0            # bounding rect width
@@ -138,7 +138,9 @@ def greenRecognize(validContoursWithData, kNearest):
 	return strFinalString
 	
 
-def TRAIN():
+def TRAIN(im):
+	
+	
 	
 	npaClassifications = load_Classif("classifications.txt")
 	npaFlattenedImages = load_Flatt("flattened_images.txt")
@@ -152,6 +154,8 @@ def TRAIN():
 	return kNearest
 	
 def TEST(kNearest):
+	
+	kNearest = kNearest
 	
 	imgTestingNumbers = LoadTest("test/test2.png")
 
@@ -181,5 +185,3 @@ def TEST(kNearest):
 #----------------------------------____MAIN___-----------------------------------------------------
 ###################################################################################################
 
-#kNearest = TRAIN()
-#TEST(kNearest)
