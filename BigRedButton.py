@@ -16,38 +16,58 @@ MIN_CONTOUR_AREA = 100
 
 from TrainAndTest import *
 
+MIN_CONTOUR_AREA = 100
+
+from TrainAndTest import *
+from GenData import *
+
 #-----------------------------------------------------------------------
 
-kN = cv2.ml.KNearest_create()
+#kN = cv2.ml.KNearest_create()
 imtest = []
 imtrain = []
 
 class GenAndTrain:
 	
 	def __init__(self):
-		root=fra1
+		
+		fra=fra1
+		
 		#-------------BUTTONS-----------------------	
 		
 		# Generate data button
-		self.gen_data = Button(root,
+		self.gen_data = Button(fra,
 						text="Generate Data",
 						width=10,height=2,
 						bg="white",fg="green")
 						
 		# Browse test file
-		self.but_browse = Button(root,
+		self.but_browse = Button(fra,
 									text="Browse",
 									bg="white",fg="green")
 						
 		# Train button
-		self.but_train = Button(root,
+		self.but_train = Button(fra,
 						text="Train",
 						width=30,height=5,
 						bg="red",fg="green")
 		
 		# однострочное окно
-		self.ent = Entry(root,width=20,bd=3)
+		self.ent = Entry(fra,width=20,bd=3)
 		
+		# exit
+		self.but_exit = Button(fra,
+								text="Exit",
+								width=10,height=2,
+								bg="white",fg="green",command=quit)
+								
+								
+		#------------PACK----------------------------
+		self.gen_data.pack()
+		self.but_browse.pack()
+		self.ent.pack()
+		self.but_train.pack()
+		self.but_exit.pack()
 		
 		
 		
@@ -57,21 +77,23 @@ class GenAndTrain:
 		self.but_browse.bind("<Button-1>",self.browse)
 		self.ent.bind("<Return>",self.entry_ent)
 		self.but_train.bind("<Button-1>",self.train)
+		#self.but_train.bind("<Button-1>",self.but_quit)
 		
-		
-		#-------------PACK---------------------------
-		#распаковывает наши кнопки на область root
-		self.gen_data.pack()
-		self.but_browse.pack()
-		self.ent.pack()
-		self.but_train.pack()
 		
 		
 	#-----------------FUNCTIONS----------------------
+	
+	def but_quit(self,event):
+		root.destroy()
 		
-	def  _generate(self,event):
-		execfile('GenData.py')
+	def _generate(self,event):
 		
+		if not imtrain:
+			showwarning("ERROR", "image not read from file \n\nfirst load it")
+			os.system("pause")         
+		else:
+			Generate(imtrain)
+			print imtrain
 		
 	def browse(self,event):
 		
@@ -80,50 +102,67 @@ class GenAndTrain:
 		op=askopenfilename()
 		im = PhotoImage(file=op)
 		# initiate imtrain to our dowload 
-		imtrain=im
+		imtrain=op.encode('utf-8')
 		l = Label(root, image=im)
 		self.ent.delete(0,END)
 		self.ent.insert(0, op)
 			
 	def train(self, event):
+		
 		global kN
 		
 		kN = TRAIN()
 		
+		if kN is None:
+			showwarning("ERROR", "image not read from file \n\nfirst load it")
+			os.system("pause")
+		
 		
 	def entry_ent(self,event):
 		t = ent.get()
+
 			
 
 class TestAndClean:
 	
 	def __init__(self):
-		root=fra2
+		
+		fra=fra2
+		
 		#-------------BUTTONS-----------------------
 		
 		#Browse section
-		self.but_browse = Button(root,
+		self.but_browse = Button(fra,
 							text="browse test",
 							width=30,height=5,
 							bg='white',fg='green')
 		
-		self.ent = Entry(root,width=30, bd=3)
+		self.ent = Entry(fra,width=30, bd=3)
 		
 		# Test Recognition section(2 picture)
 
 		
 		# Recognize button
-		self.but_rec = Button(root,
+		self.but_rec = Button(fra,
 								text="Recognize",
 								width=30,height=5,
 								bg="white",fg="green")
 		
 		# Clean button
-		self.but_clean = Button(root,
+		self.but_clean = Button(fra,
 								text="Clean",
 								width=30,height=5,
 								bg="white",fg="green")
 								
+		
+								
+		#------------PACK----------------------------
+		self.but_browse.pack()
+		self.ent.pack()
+		self.but_rec.pack()
+		self.but_clean.pack()
+								
+														
 								
 		#-------------HANDLER------------------------				
 		#обработчик события нажатия на кнопки мыши				
@@ -133,15 +172,9 @@ class TestAndClean:
 		self.ent.bind('<Return>', self.entry_ent)
 		
 		
-		#-------------PACK---------------------------
-		#распаковывает наши кнопки на область root
-		self.but_browse.pack()
-		self.ent.pack()
-		self.but_rec.pack()
-		self.but_clean.pack()
-		
 	#-----------------FUNCTIONS----------------------
 
+		
 	def clean(self,event):
 		
 		f = open ('classification.txt','w')
@@ -150,17 +183,34 @@ class TestAndClean:
 		r.close()
 	
 	def rec(self, event):
-		TEST(kN)
+		
+		#if you don't browse image
+		if not imtest:
+			
+			showwarning("ERROR", "image not read from file \n\nfirst load it")
+			os.system("pause")
+		
+		#if you don't train	
+		elif kN is None:
+			
+			showwarning("ERROR", "First need to train!\n\n")
+			os.system("pause")
+			         
+		else:
+			TEST(imtest, kN)
 		
 	def browse(self,event):
-
-		op=askopenfilename()
+		
+		global imtest
+		
+		op = askopenfilename()
+		imtest = op.encode('utf-8')
 		im = PhotoImage(file=op)
 		l = Label(root, image=im)
-		l.image = im
+		#l.image = im
 		self.ent.delete(0,END)
 		self.ent.insert(0, op)
-		l.pack()
+		#l.pack()
 	
 	def entry_ent(self,event):
 		t = ent.get()
