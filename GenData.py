@@ -38,8 +38,9 @@ def im2thresh(im):
 
 								 
 #--------------------------____Main____-------------------------------------------------------------
-def Generate(im_test):
-	imgTrainingNumbers = LoadPicLett(im_test)
+def Generate(im_train):
+	
+	imgTrainingNumbers = LoadPicLett(im_train)
 	imgThresh = im2thresh(imgTrainingNumbers)
 
 	cv2.imshow("imgThresh", imgThresh)      # show threshold image for reference
@@ -86,18 +87,20 @@ def Generate(im_test):
 
 			cv2.imshow("imgROI", imgROI)                    # show cropped out char for reference
 			cv2.imshow("imgROIResized", imgROIResized)      # show resized image for reference
-			cv2.imshow("training_numbers.png", imgTrainingNumbers)      # show training numbers image, this will now have red rectangles drawn on it
+			cv2.imshow("imgTrainingNumbers", imgTrainingNumbers)      # show training numbers image, this will now have red rectangles drawn on it
 
 			intChar = cv2.waitKey(0)                     # get key press
-
+			print chr(intChar)
+			print intChar
+			
 			if intChar == 27:                   # if esc key was pressed
-				sys.exit()                      # exit program
-			elif intChar in intValidChars:      # else if the char is in the list of chars we are looking for . . .
-
-				intClassifications.append(intChar)                                                # append classification char to integer list of chars (we will convert to float later before writing to file)
+				os.system('pause')                      # exit program
+			elif chr(intChar).upper() in intValidChars:      # else if the char is in the list of chars we are looking for . . .
+				intClassifications.append(intChar)                                              # append classification char to integer list of chars (we will convert to float later before writing to file)
 
 				npaFlattenedImage = imgROIResized.reshape((1, RESIZED_IMAGE_WIDTH * RESIZED_IMAGE_HEIGHT))  # flatten image to 1d numpy array so we can write to file later
-				npaFlattenedImages = np.append(npaFlattenedImages, npaFlattenedImage, 0)                    # add current flattened impage numpy array to list of flattened image numpy arrays
+				npaFlattenedImages = np.append(npaFlattenedImages, npaFlattenedImage,0)                    # add current flattened impage numpy array to list of flattened image numpy arrays
+			
 			# end if
 		# end if
 	# end for
@@ -108,14 +111,13 @@ def Generate(im_test):
 
 	npaClassifications = fltClassifications.reshape((fltClassifications.size, 1))   # flatten numpy array of floats to 1d so we can write to file later
 
+	
 	print "\n\ntraining complete !!\n"
 
 	np.savetxt("classifications.txt", npaClassifications)           # write flattened images to file
-	np.savetxt("flattened_images.txt",
-	npaFlattenedImages)          
+	np.savetxt("flattened_images.txt",npaFlattenedImages)          
 
 	cv2.destroyAllWindows()             # remove windows from memory
 
-	
 
 
