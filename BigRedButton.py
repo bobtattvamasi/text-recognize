@@ -5,6 +5,7 @@ import sys
 import numpy as np
 import cv2
 import os
+import logging
 
 
 from Tkinter import *
@@ -12,20 +13,20 @@ from tkFileDialog import *
 import fileinput
 from tkMessageBox import *
 
-MIN_CONTOUR_AREA = 100
-
-from TrainAndTest import *
-
-MIN_CONTOUR_AREA = 100
-
 from TrainAndTest import *
 from GenData import *
 
 #-----------------------------------------------------------------------
 
-#kN = cv2.ml.KNearest_create()
+kN = None
+MIN_CONTOUR_AREA = 100
 imtest = []
 imtrain = []
+
+logging.basicConfig(
+			level=logging.DEBUG,
+			format='%(asctime)s : %(levelname)s : %(massage)s')
+
 
 class GenAndTrain:
 	
@@ -89,7 +90,7 @@ class GenAndTrain:
 	def _generate(self,event):
 		
 		if not imtrain:
-			showwarning("ERROR", "image not read from file \n\nfirst load it")
+			showwarning("ERROR", "train image not read from file \n\nfirst load it")
 			os.system("pause")         
 		else:
 			Generate(imtrain)
@@ -115,6 +116,10 @@ class GenAndTrain:
 		
 		if kN is None:
 			showwarning("ERROR", "image not read from file \n\nfirst load it")
+			os.system("pause")
+		
+		if os.stat("classifications.txt").st_size == 0 and os.stat("flattened_images.txt").st_size == 0:
+			showwarning("ERROR", "can't read data from text file \n\nfirst generate it")
 			os.system("pause")
 		
 		
@@ -154,13 +159,15 @@ class TestAndClean:
 								width=30,height=5,
 								bg="white",fg="green")
 								
-		
+		#Text space
+		self.text = Text(fra3,font='Arial 14',wrap=WORD)
 								
 		#------------PACK----------------------------
 		self.but_browse.pack()
 		self.ent.pack()
 		self.but_rec.pack()
 		self.but_clean.pack()
+		#self.text.pack(side=BOTTOM)
 								
 														
 								
@@ -177,10 +184,13 @@ class TestAndClean:
 		
 	def clean(self,event):
 		
+		pass
+		"""
 		f = open ('classification.txt','w')
 		r = open ('flattened_images.txt','w')
 		f.close()
 		r.close()
+		"""
 	
 	def rec(self, event):
 		
@@ -191,7 +201,7 @@ class TestAndClean:
 			os.system("pause")
 		
 		#if you don't train	
-		elif kN is None:
+		elif not(kN):
 			
 			showwarning("ERROR", "First need to train!\n\n")
 			os.system("pause")
@@ -206,11 +216,11 @@ class TestAndClean:
 		op = askopenfilename()
 		imtest = op.encode('utf-8')
 		im = PhotoImage(file=op)
-		l = Label(root, image=im)
-		#l.image = im
+		l = Label(fra3, image=im)
+		l.image = im
 		self.ent.delete(0,END)
 		self.ent.insert(0, op)
-		#l.pack()
+		l.pack(side=TOP)
 	
 	def entry_ent(self,event):
 		t = ent.get()
@@ -223,9 +233,11 @@ class TestAndClean:
 root = Tk()
 fra1=Frame(root,width=500,height=100,bd=5)
 fra2=Frame(root,width=500,height=100,bd=5)
+fra3=Frame(root,width=500,height=100,bd=5)
 root.title('TextRecognition_0.01')
 fra1.pack(side="left")
 fra2.pack(side="right")
+fra3.pack(side="right")
 
 #root.geometry('600x600')
 obj0 = GenAndTrain()
