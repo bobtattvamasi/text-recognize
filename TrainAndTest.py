@@ -12,12 +12,15 @@ MIN_CONTOUR_AREA = 100
 RESIZED_IMAGE_WIDTH = 20
 RESIZED_IMAGE_HEIGHT = 30
 
-# инициализация контура с зеленным прямоугольником
+kNearest = cv2.ml.KNearest_create() 
+
+
+#  Инициализация контура с зеленным прямоугольником
 class ContourWithData():
 
     # member variables 
-    npaContour = None           # контур
-    boundingRect = None         # Выделенный прямоугольник для контура
+    npaContour = None           # contour
+    boundingRect = None         # bounding rect for contour
     intRectX = 0                # bounding rect top left corner x location
     intRectY = 0                # bounding rect top left corner y location
     intRectWidth = 0            # bounding rect width
@@ -34,8 +37,6 @@ class ContourWithData():
     def checkIfContourIsValid(self):                            # this is oversimplified, for a production grade program
         if self.fltArea < MIN_CONTOUR_AREA: return False        # much better validity checking would be necessary
         return True
-
-kNearest = cv2.ml.KNearest_create()  
 
 def LoadTest(im):
 	imgTestingNumbers = cv2.imread(im)          # read in testing numbers image
@@ -99,13 +100,13 @@ def Contours2validContiours (npaContours):
 	
 	return validContoursWithData
 
-def greenRecognize(validContoursWithData, kNearest):
+def greenRecognize(im_test, validContoursWithData, kNearest):
 	
-	kNearest = TRAIN()
+	#kNearest = TRAIN()
 	
 	strFinalString = ""         # declare final string, this will have the final number sequence by the end of the program
 	
-	imgTestingNumbers = LoadTest("test/test2.png")
+	imgTestingNumbers = LoadTest(im_test)
 
 	imgThresh = img2thresh(imgTestingNumbers)
 	
@@ -135,12 +136,12 @@ def greenRecognize(validContoursWithData, kNearest):
 
 		strFinalString = strFinalString + strCurrentChar            # append current char to full string
 	
-	return strFinalString
+	return strFinalString, imgTestingNumbers
 	
 
-def TRAIN(im):
+def TRAIN():
 	
-	
+	global kNearest
 	
 	npaClassifications = load_Classif("classifications.txt")
 	npaFlattenedImages = load_Flatt("flattened_images.txt")
@@ -153,11 +154,9 @@ def TRAIN(im):
 	
 	return kNearest
 	
-def TEST(kNearest):
+def TEST(im_test, kNearest):
 	
-	kNearest = kNearest
-	
-	imgTestingNumbers = LoadTest("test/test2.png")
+	imgTestingNumbers = LoadTest(im_test)
 
 	imgThresh = img2thresh(imgTestingNumbers)
 	
@@ -171,7 +170,7 @@ def TEST(kNearest):
 
 	validContoursWithData = Contours2validContiours(npaContours)
 
-	strFinalString = greenRecognize(validContoursWithData, kNearest)
+	strFinalString, imgTestingNumbers = greenRecognize(im_test, validContoursWithData, kNearest)
 
 	print "\n" + strFinalString + "\n"                  # show the full string
 
@@ -180,8 +179,4 @@ def TEST(kNearest):
 
 	cv2.destroyAllWindows()             # remove windows from memory
 
-	
-###################################################################################################
-#----------------------------------____MAIN___-----------------------------------------------------
-###################################################################################################
 
