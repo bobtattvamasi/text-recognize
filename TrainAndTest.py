@@ -178,5 +178,7 @@ def TEST(im_test, kNearest):
 	cv2.waitKey(0)                                          # wait for user key press
 
 	cv2.destroyAllWindows()             # remove windows from memory
+	
+	os.system('pause')
 
 
