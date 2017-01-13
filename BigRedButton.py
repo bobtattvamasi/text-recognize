@@ -19,31 +19,33 @@ from GenData import *
 #-----------------------------------------------------------------------
 
 kN = None
+Image_label = None
 MIN_CONTOUR_AREA = 100
 imtest = []
 imtrain = []
 
-logging.basicConfig(
-			level=logging.DEBUG,
-			format='%(asctime)s : %(levelname)s : %(massage)s')
 
-
+# Class for packing Buttons: Generate, Train
+ 
 class GenAndTrain:
 	
 	def __init__(self):
 		
 		fra=fra1
 		
+		# A litle frame for wrowse section
+		browse_frame = Frame(fra,width=30,height=5,bd=5)
+		
 		#-------------BUTTONS-----------------------	
 		
 		# Generate data button
 		self.gen_data = Button(fra,
 						text="Generate Data",
-						width=10,height=2,
+						width=30,height=5,
 						bg="white",fg="green")
 						
 		# Browse test file
-		self.but_browse = Button(fra,
+		self.but_browse = Button(browse_frame,
 									text="Browse",
 									bg="white",fg="green")
 						
@@ -54,39 +56,29 @@ class GenAndTrain:
 						bg="red",fg="green")
 		
 		# однострочное окно
-		self.ent = Entry(fra,width=20,bd=3)
+		self.ent = Entry(browse_frame,width=20,bd=3)
 		
-		# exit
-		self.but_exit = Button(fra,
-								text="Exit",
-								width=10,height=2,
-								bg="white",fg="green",command=quit)
-								
-								
+
 		#------------PACK----------------------------
 		self.gen_data.pack()
-		self.but_browse.pack()
-		self.ent.pack()
+		browse_frame.pack()
+		self.but_browse.pack(side=LEFT)
+		self.ent.pack(side=RIGHT)
 		self.but_train.pack()
-		self.but_exit.pack()
 		
 		
 		
 		#-------------HANDLER------------------------				
-		#обработчик события нажатия на кнопки мыши				
+		# Обработчик события нажатия на кнопки мыши				
 		self.gen_data.bind("<Button-1>", self._generate)
 		self.but_browse.bind("<Button-1>",self.browse)
 		self.ent.bind("<Return>",self.entry_ent)
 		self.but_train.bind("<Button-1>",self.train)
-		#self.but_train.bind("<Button-1>",self.but_quit)
 		
 		
 		
 	#-----------------FUNCTIONS----------------------
 	
-	def but_quit(self,event):
-		root.destroy()
-		
 	def _generate(self,event):
 		
 		if not imtrain:
@@ -125,9 +117,9 @@ class GenAndTrain:
 		
 	def entry_ent(self,event):
 		t = ent.get()
-
 			
 
+# Class for packing buttons Test and clean
 class TestAndClean:
 	
 	def __init__(self):
@@ -136,15 +128,15 @@ class TestAndClean:
 		
 		#-------------BUTTONS-----------------------
 		
-		#Browse section
-		self.but_browse = Button(fra,
+		# Browse section
+		browse_frame = Frame(fra, width=30, height=5)
+		
+		self.but_browse = Button(browse_frame,
 							text="browse test",
-							width=30,height=5,
 							bg='white',fg='green')
 		
-		self.ent = Entry(fra,width=30, bd=3)
+		self.ent = Entry(browse_frame,width=20, bd=3)
 		
-		# Test Recognition section(2 picture)
 
 		
 		# Recognize button
@@ -152,22 +144,31 @@ class TestAndClean:
 								text="Recognize",
 								width=30,height=5,
 								bg="white",fg="green")
-		
-		# Clean button
-		self.but_clean = Button(fra,
-								text="Clean",
-								width=30,height=5,
-								bg="white",fg="green")
+								
 								
 		#Text space
 		self.text = Text(fra3,font='Arial 14',wrap=WORD)
+		
+		# exit
+		self.but_exit = Button(fra,
+								text="Exit",
+								width=30,height=5,
+								bg="white",fg="green",command=quit)
+		
+		# Clean button
+		self.but_clean = Button(fra,
+								text="Clean test",
+								width=30,height=5,
+								bg="white",fg="green")
 								
 		#------------PACK----------------------------
-		self.but_browse.pack()
-		self.ent.pack()
+		browse_frame.pack()
+		self.but_browse.pack(side=LEFT)
+		self.ent.pack(side=RIGHT)
 		self.but_rec.pack()
-		self.but_clean.pack()
 		#self.text.pack(side=BOTTOM)
+		self.but_clean.pack()
+		self.but_exit.pack()
 								
 														
 								
@@ -175,23 +176,13 @@ class TestAndClean:
 		#обработчик события нажатия на кнопки мыши				
 		self.but_browse.bind("<Button-1>", self.browse)
 		self.but_rec.bind("<Button-1>",self.rec)
-		self.but_clean.bind("<Button-1>",self.clean)
 		self.ent.bind('<Return>', self.entry_ent)
+		self.but_clean.bind("<Button-1>",self.clean)
 		
 		
 	#-----------------FUNCTIONS----------------------
 
 		
-	def clean(self,event):
-		
-		pass
-		"""
-		f = open ('classification.txt','w')
-		r = open ('flattened_images.txt','w')
-		f.close()
-		r.close()
-		"""
-	
 	def rec(self, event):
 		
 		#if you don't browse image
@@ -208,22 +199,44 @@ class TestAndClean:
 			         
 		else:
 			TEST(imtest, kN)
-		
+	
+	# Browse test image	
 	def browse(self,event):
 		
-		global imtest
+		global imtest, Image_label
 		
 		op = askopenfilename()
 		imtest = op.encode('utf-8')
 		im = PhotoImage(file=op)
-		l = Label(fra3, image=im)
-		l.image = im
+		Image_label = Label(fra3, image=im)
+		Image_label.image = im
 		self.ent.delete(0,END)
 		self.ent.insert(0, op)
-		l.pack(side=TOP)
+		Image_label.pack(side=TOP)
 	
 	def entry_ent(self,event):
 		t = ent.get()
+		
+	
+	# Clean frame	
+	def clean(self,event):
+		
+		
+		if Image_label.image is None:
+			
+			showwarning("ERROR", "image not read from file \n\nfirst load it")
+			os.system("pause")
+		
+		Image_label.image.blank()
+		Image_label.image = None
+		
+		"""
+		f = open ('classification.txt','w')
+		r = open ('flattened_images.txt','w')
+		f.close()
+		r.close()
+		"""
+	
 								
 		
 #-----------------------------------------------------------------------
@@ -231,10 +244,20 @@ class TestAndClean:
 #----------------------___main___---------------------------------------
 
 root = Tk()
+
+# Frame for burrons: browse train image, generate data and train on it
 fra1=Frame(root,width=500,height=100,bd=5)
+
+# Frame for showing picture and recognized text
 fra2=Frame(root,width=500,height=100,bd=5)
+
+# Frame for buttons: browse test image, recognize it, clean image from
+# frame2 and Exit
 fra3=Frame(root,width=500,height=100,bd=5)
+
 root.title('TextRecognition_0.01')
+
+# Frame packs
 fra1.pack(side="left")
 fra2.pack(side="right")
 fra3.pack(side="right")
@@ -243,4 +266,4 @@ fra3.pack(side="right")
 obj0 = GenAndTrain()
 obj1 = TestAndClean()
 
-mainloop()		
+mainloop()
