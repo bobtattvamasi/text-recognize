@@ -17,7 +17,7 @@ This aplication can read characters from images of string.
 <h2>Usage instruction</h2>
 
 1) Run BigRedButton.py
-   Now you'll see application with buttons. 
+Now you'll see application with buttons. 
 
 2) We have a choice:
     A) Generation data
