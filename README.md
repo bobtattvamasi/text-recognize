@@ -5,7 +5,7 @@
 This aplication can read characters from images of string. 
 
 <h2>Dependencies</h2>
-python
+<\n>python
 opencv
 numpy
 tkinter
