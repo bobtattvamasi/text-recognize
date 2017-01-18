@@ -1,7 +1,7 @@
 # text-recognize
 
 --------------------------
-<h1>description</h1>
+<h2>description</h2>
 This aplication can read characters from images of string. 
 
 
