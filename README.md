@@ -20,6 +20,7 @@ This aplication can read characters from images of string.
 
 Now you'll see application with buttons. 
 
+
 2) We have a choice:
     
     A) Generation data
