@@ -5,13 +5,13 @@
 This aplication can read characters from images of string. 
 
 <h2>Dependencies</h2>
-python
+   python
 
-opencv
+   opencv
 
-numpy
+   numpy
 
-tkinter
+   tkinter
 
 
 <h2>Usage instruction</h2>
