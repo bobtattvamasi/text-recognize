@@ -16,8 +16,10 @@ This aplication can read characters from images of string.
     C) Use for recognition
     
 --------------------------
-A) If you need to generate data (It mean to create files classification.txt and flattened_images.txt) you need browse train picture from folder 'train' (training_chars.png) and then press button 'Generate data'. In this data stored information about classification between characters and it ascii code. When you press the button, you will see the pictures. imgTrainingData is our train picture. imgROI is image of keychar that we should press. Thus program run along all the train image, bound chars and ask us to press the corresponding key to classificate. When all chars onumage is done - generating is over. All data stored in 2 files: 
-    classification.txt
-    flattened_images.txt
+A) If you need to generate data (It mean to create files classifications.txt and flattened_images.txt if it don't exist or if you want to generate new data from new train image), you need to browse train picture from folder 'train' (training_chars.png) and then press button 'Generate data'. When you pressed the button, you will see the pictures. imgTrainingData is our train picture with strings of chars. imgROI is image of keychar that we should press. Thus program run along all the train image, bound chars and ask us to press the corresponding key to classificate. When all chars on image is done - generating is over. All data stored in 2 files: 
+    classifications.txt - contains codes of pressed keys in 1d vectors
+    flattened_images.txt - contains resized to 20x30 images of croped chars from our train image in 1d vectors
     
-B) 
+B) So, if with data all right. We should train our k-Nearest neighbors.
+
+C) And now we can recognize. First browse test image from folder 'test' (or wherever you keep it) and load it. Then press button 'Recognize'. If you want to recognize the new test picture, press button 'Clean test'
