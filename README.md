@@ -1,11 +1,17 @@
 # text-recognize
 
 --------------------------
-<h2>description</h2>
+<h2>Description</h2>
 This aplication can read characters from images of string. 
 
+<h2>Dependencies</h2>
+python
+opencv
+numpy
+tkinter
 
-<h2>usage instruction</h2>
+
+<h2>Usage instruction</h2>
 
 1) Run BigRedButton.py
    Now you'll see application with buttons. 
