@@ -39,5 +39,5 @@ B) So, if with data all right. We should train our classificator on k-Nearest ne
 C) And now we can recognize. First browse test image from folder 'test' (or wherever you keep it) and load it. Then press button 'Recognize'. If you want to recognize the new test picture, press button 'Clean test'
 
 
-<h2> About k-Nearest </h2>
+<h2> About k-Nearest Neighbors </h2>
 ![alt tag](https://raw.githubusercontent.com/bobtattvamasi/text-recognize/master/KNN_Overview.png)
