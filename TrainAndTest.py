@@ -180,5 +180,3 @@ def TEST(im_test, kNearest):
 	cv2.destroyAllWindows()             # remove windows from memory
 	
 	os.system('pause')
-
-
