@@ -2,7 +2,7 @@
 
 --------------------------
 <h2>Description</h2>
-This aplication can read characters from images of string. 
+This aplication can read characters from images.
 
 <h2>Dependencies</h2>
    python
