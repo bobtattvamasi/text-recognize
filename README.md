@@ -37,3 +37,6 @@ A) If you need to generate data (It mean to create files classifications.txt and
 B) So, if with data all right. We should train our classificator on k-Nearest neighbors method.
 
 C) And now we can recognize. First browse test image from folder 'test' (or wherever you keep it) and load it. Then press button 'Recognize'. If you want to recognize the new test picture, press button 'Clean test'
+
+<h2> About k-Nearest </h2>
+![alt tag](https://raw.githubusercontent.com/MicrocontrollersAndMore/OpenCV_3_KNN_Character_Recognition_Python/master/DocsAndPresentation/KNN_Overview.png)
