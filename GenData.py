@@ -5,6 +5,7 @@ import sys
 import numpy as np
 import cv2
 import os
+import string
 
 # module level variables ##########################################################################
 MIN_CONTOUR_AREA = 100
@@ -43,7 +44,7 @@ def Generate(im_train):
 	imgTrainingNumbers = LoadPicLett(im_train)
 	imgThresh = im2thresh(imgTrainingNumbers)
 
-	cv2.imshow("imgThresh", imgThresh)      # show threshold image for reference
+	#cv2.imshow("imgThresh", imgThresh)      # show threshold image for reference
 
 	imgThreshCopy = imgThresh.copy() 
 
@@ -59,7 +60,7 @@ def Generate(im_train):
 	# Массив символов ------------------------------------------------------------------------------------
 
 	intValidChars = []
-
+	
 	# for digits
 	for i in range(48,58):
 		intValidChars.append(chr(i))
@@ -67,7 +68,12 @@ def Generate(im_train):
 	# for capital letters
 	for i in range(65,91):
 		intValidChars.append(chr(i))
-
+		
+	
+	#intValidChars = string.digits + string.ascii_lowercase
+	
+	print (intValidChars)
+	
 	#------------------------------------------------------------------------------------------------------
 
 	# Около каждого контура рисуем прямоугольник
@@ -85,9 +91,9 @@ def Generate(im_train):
 			imgROI = imgThresh[intY:intY+intH, intX:intX+intW]                                  # crop char out of threshold image
 			imgROIResized = cv2.resize(imgROI, (RESIZED_IMAGE_WIDTH, RESIZED_IMAGE_HEIGHT))     # resize image, this will be more consistent for recognition and storage
 
-			cv2.imshow("imgROI", imgROI)                    # show cropped out char for reference
+			#cv2.imshow("imgROI", imgROI)                    # show cropped out char for reference
+			cv2.imshow("imgTrainingChars", imgTrainingNumbers)      # show training numbers image, this will now have red rectangles drawn on it
 			cv2.imshow("imgROIResized", imgROIResized)      # show resized image for reference
-			cv2.imshow("imgTrainingNumbers", imgTrainingNumbers)      # show training numbers image, this will now have red rectangles drawn on it
 
 			intChar = cv2.waitKey(0)                     # get key press
 			print chr(intChar)
@@ -95,12 +101,18 @@ def Generate(im_train):
 			
 			if intChar == 27:                   # if esc key was pressed
 				os.system('pause')                      # exit program
+				break
+				 
 			elif chr(intChar).upper() in intValidChars:      # else if the char is in the list of chars we are looking for . . .
 				intClassifications.append(intChar)                                              # append classification char to integer list of chars (we will convert to float later before writing to file)
 
+				print intClassifications
+				
 				npaFlattenedImage = imgROIResized.reshape((1, RESIZED_IMAGE_WIDTH * RESIZED_IMAGE_HEIGHT))  # flatten image to 1d numpy array so we can write to file later
 				npaFlattenedImages = np.append(npaFlattenedImages, npaFlattenedImage,0)                    # add current flattened impage numpy array to list of flattened image numpy arrays
 			
+		else:
+			break
 			# end if
 		# end if
 	# end for
@@ -118,6 +130,3 @@ def Generate(im_train):
 	np.savetxt("flattened_images.txt",npaFlattenedImages)          
 
 	cv2.destroyAllWindows()             # remove windows from memory
-
-
-
