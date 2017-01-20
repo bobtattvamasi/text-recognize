@@ -5,7 +5,6 @@ import sys
 import numpy as np
 import cv2
 import os
-import logging
 
 
 from Tkinter import *
@@ -85,6 +84,9 @@ class GenAndTrain:
 			showwarning("ERROR", "train image not read from file \n\nfirst load it")
 			os.system("pause")         
 		else:
+			showinfo('Attention', """In subsequent steps you need to press all keys/ 
+that you'll see on images with title "imgRoiResized" \n\nRelax, it doesn't take a lot of time\n\n
+If you want to return in menu press "Esc" """)
 			Generate(imtrain)
 			print imtrain
 		
@@ -107,7 +109,7 @@ class GenAndTrain:
 		kN = TRAIN()
 		
 		if kN is None:
-			showwarning("ERROR", "image not read from file \n\nfirst load it")
+			showwarning("ERROR", "can't read data from text file \n\nfirst generate it	")
 			os.system("pause")
 		
 		if os.stat("classifications.txt").st_size == 0 and os.stat("flattened_images.txt").st_size == 0:
@@ -230,12 +232,6 @@ class TestAndClean:
 		Image_label.image.blank()
 		Image_label.image = None
 		
-		"""
-		f = open ('classification.txt','w')
-		r = open ('flattened_images.txt','w')
-		f.close()
-		r.close()
-		"""
 	
 								
 		
@@ -266,4 +262,4 @@ fra3.pack(side="right")
 obj0 = GenAndTrain()
 obj1 = TestAndClean()
 
-mainloop()
+mainloop()		
