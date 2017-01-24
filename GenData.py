@@ -61,13 +61,8 @@ def Generate(im_train):
 
 	intValidChars = []
 	
-	# for digits
-	for i in range(48,58):
-		intValidChars.append(chr(i))
-	
-	# for capital letters
-	for i in range(65,91):
-		intValidChars.append(chr(i))
+	# Create list of digits and chars
+	intValidChars = list(string.digits + string.ascii_lowercase)
 		
 	
 	#intValidChars = string.digits + string.ascii_lowercase
