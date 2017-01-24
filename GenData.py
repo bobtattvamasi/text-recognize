@@ -119,7 +119,7 @@ def Generate(im_train):
 	npaClassifications = fltClassifications.reshape((fltClassifications.size, 1))   # flatten numpy array of floats to 1d so we can write to file later
 
 	
-	print "\n\ntraining complete !!\n"
+	print "\n\ngeneration complete !!\n"
 
 	np.savetxt("classifications.txt", npaClassifications)           # write flattened images to file
 	np.savetxt("flattened_images.txt",npaFlattenedImages)          
